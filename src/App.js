@@ -1,31 +1,24 @@
 import "./App.css";
 import React, { useState } from "react";
-import Tesseract from "tesseract.js";
+import { KonvertBild } from "./components/KonvertBild";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [konvertierStatus, setKonvertierStatus] = useState("Bild wählen");
+
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
   const [imagename, setImagename] = useState("");
   const [progress, setProgress] = useState(0);
 
-  const onklickConvert = () => {
-    setIsLoading(true);
-    Tesseract.recognize(image, "deu", {
-      logger: (m) => {
-        console.log(m);
-        if (m.status === "recognizing text") {
-          setProgress(Math.round(m.progress * 100));
-        }
-      },
-    }).then(({ data: { text } }) => {
-      setText(text);
-      setIsLoading(false);
-    });
-  };
+  const onklickConvert = KonvertBild(
+    setKonvertierStatus,
+    image,
+    setProgress,
+    setText
+  );
 
   const onklickNewBild = () => {
-    setIsLoading(false);
+    setKonvertierStatus("Bild wählen");
     setText("");
     setImage("");
     setImagename("");
@@ -36,19 +29,18 @@ function App() {
     <div className="container" style={{ height: "100vh" }}>
       <div className="row h-100">
         <div className="col-md-5 mx-auto d-flex flex-column align-items-center">
-          {!isLoading && !text && (
-            <h1 className="mt-5 mb-5">Bilderkennung by D7X - Bild wählen</h1>
-          )}
+          <h1 className="mt-5 mb-5">Bilderkennung by D7X</h1>
+          <h2 className="mt-5 mb-5">{konvertierStatus}</h2>
 
-          {!isLoading && !text && !imagename && (
+          {!imagename && (
             <div>
               <div className="input-group-btn">
-                <label for="bildfile" className="btn btn-default">
-                  Bild auswählen
+                <label htmlFor="bildfile" className="btn btn-default">
+                  Dateiauswahl
                   <input
                     id="bildfile"
                     type="file"
-                    Style="display:none;"
+                    style={{ display: "none" }}
                     className="form-control btn mt-4"
                     onChange={(event) => {
                       setImage(URL.createObjectURL(event.target.files[0]));
@@ -62,7 +54,13 @@ function App() {
             </div>
           )}
 
-          {!isLoading && !text && imagename && (
+          {konvertierStatus === "Konvertierung läuft" && (
+            <div>
+              <p className="text-center">Fortschritt : {progress} Prozent</p>
+            </div>
+          )}
+
+          {!text && imagename && konvertierStatus !== "Konvertierung läuft" && (
             <div>
               <input
                 type="button"
@@ -74,16 +72,8 @@ function App() {
             </div>
           )}
 
-          {isLoading && (
+          {konvertierStatus === "Konvertierung beendet" && (
             <div>
-              <h1>Bilderkennung by D7X - Bild analysieren</h1>
-              <p className="text-center">Fortschritt : {progress} Prozent</p>
-            </div>
-          )}
-
-          {!isLoading && text && (
-            <div>
-              <h1>Bilderkennung by D7X - Text zum Bild</h1>
               <textarea
                 className="form-control"
                 rows="15"
@@ -93,7 +83,7 @@ function App() {
             </div>
           )}
 
-          {!isLoading && text && (
+          {konvertierStatus === "Konvertierung beendet" && (
             <div>
               <input
                 type="button"
