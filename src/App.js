@@ -25,10 +25,12 @@ function App() {
     setProgress(0);
   };
 
+  // col-md-5 mx-auto
+
   return (
     <div className="container" style={{ height: "100vh" }}>
       <div className="row h-100">
-        <div className="col-md-5 mx-auto d-flex flex-column align-items-center">
+        <div className="d-flex flex-column align-items-center">
           <h1 className="mt-5 mb-5">Bilderkennung by D7X</h1>
           <h2 className="mt-5 mb-5">{konvertierStatus}</h2>
 
