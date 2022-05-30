@@ -10,6 +10,7 @@
     "mdb-react-ui-kit": "^3.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-image-filter": "^0.1.2",
     "react-scripts": "5.0.1",
     "tesseract.js": "2.1.1",
     "web-vitals": "^2.1.4"
